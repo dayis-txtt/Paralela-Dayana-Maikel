@@ -12,8 +12,9 @@ int main () {
 		status = pthread_create(&threadID[i], NULL, imprimirthread, &i);
 	}
 	
-	for(i=0;i<4;i++){
-		pthread_join(threadID[i], NULL);
+	int j;
+	for(j=0;j<4;j++){
+		pthread_join(threadID[j], NULL);
 	}
 	return 0;
 }

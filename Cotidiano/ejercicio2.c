@@ -3,20 +3,20 @@
 #include <unistd.h>
 
 void* suma (void* arg);
-int variable = 0;
+int variableCompartida = 0;
+pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;	
 
 int main() {
 
 	int nucleos = sysconf(_SC_NPROCESSORS_ONLN);
 	pthread_t threadID[nucleos];
         int hilos;
-        int i;
-	int j;
-	for(i = 0;i < nucleos; i++){
+     
+	for(int i = 0;i < nucleos; i++){
                 hilos = pthread_create(&threadID[i], NULL, suma, &i);
         }
 
-	for(j=0; j < nucleos; j++){
+	for(int j=0; j < nucleos; j++){
                 pthread_join(threadID[j], NULL);
         }
 
@@ -25,15 +25,18 @@ int main() {
 }
 
 void* suma (void* arg){
-	int i;
 	int id = *(int*) arg;
-	
-	for (i=0; i < 10000000; i++){
-		variable++;
+	int sumaTemp = 0;
+	for (int i=0; i < 10000000; i++){
+		sumaTemp++;
 	}
 	
+	pthread_mutex_lock(&lock);
+	variableCompartida += sumaTemp;
+	pthread_mutex_unlock(&lock);
+
 	printf("Termino el hilo %d\n",id);
-	printf("Resultado: %d\n", variable);
+	printf("Resultado: %d\n", variableCompartida);
 
 	return NULL;
 
