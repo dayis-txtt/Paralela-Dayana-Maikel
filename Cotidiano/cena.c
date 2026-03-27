@@ -1,0 +1,38 @@
+
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <stdbool.h>
+
+void* think(void* arg);
+
+
+
+int main(){
+	int nucleos = sysconf(_SC_NPROCESSORS_ONLN);
+	int fork[nucleos];	
+	pthread_t threadID[nucleos];
+	for (int i=0; i<nucleos; i++){
+		printf("Tenedor %d\n", i);
+	}
+    int filosofos;
+
+    for(int i = 0;i < nucleos; i++){
+            filosofos = pthread_create(&threadID[i], NULL, think, &i);
+    }	
+
+
+	for(int j=0; j < nucleos; j++){
+                pthread_join(threadID[j], NULL);
+        }
+    return 0;
+}
+
+
+void* think(void* arg){
+	int id = *(int*) arg;
+	printf ("Filosofando, mi nombre es %d\n", id);
+	sleep(3);
+}
+
+

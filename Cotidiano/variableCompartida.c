@@ -20,6 +20,7 @@ int main() {
                 pthread_join(threadID[j], NULL);
         }
 
+
 	return 0;
 
 }
